@@ -1,0 +1,10 @@
+{
+  "name": "google_scrape_node",
+  "version": "1.0.0",
+  "description": "Scrapes paper titles from a results page from Google Scholar",
+  "author": "Ryan Hite",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4"
+  }
+}
