@@ -1,14 +1,16 @@
-#GSScrapeNode
-###A web scraper for Google Scholar utilizing Node.js
+#Facebook Scraper
+###A web scraper for Facebook utilizing Node.js
 
 <br><br>
 ####Introduction
-A methodology to grab all titles that reference a seed article was
-necessary for a research project, but Google does not provide a way to
-do this. Thus, GSScrape was born with the goal of automatically scraping
-Google Scholar for titles. As it stands today, **May 24, 2016**,
-GSScrape is only semi-automatic, and requires a user to navigate to each
-results page and click a button to extract titles to a file.
+The purpose of this project is to grab information
+concerning name, age, gender, hometown, and college
+major from group members in a facebook group. The information will
+be used to crossreference University of Minnesota databases.
+As it stands today, **June 3, 2016**,
+Facebook_Scraper isn't functional. We are adapting a previous project
+GSScrapNode https://github.com/rdhite/GSScrapeNode
+to complete the task.
 <br><br>
 GSScrapeNode is a version of GSScrape implemented through a Node.js
 based webserver and a Google Chrome extension. It is built this way
