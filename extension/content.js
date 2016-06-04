@@ -1,42 +1,38 @@
-//make event listener to begin on button click
+class Profile {
+	constructor() {
+		this.FirstName = '',
+		this.LastName = '' // Maybe we just want to keep the whole name one variable
+		// whatever other things we will need
+	}
+};
 
+function captureUrls(){
+	// get Urls from page
+	var profileImageLinksToProfiles = document.querySelectorAll('a._8o._8r.lfloat._ohe:not(.fbxWelcomeBoxSmallLeft)');
+	var  profileUrls= [];
+	for (var i = 0; i < tempProfileUrls.length; i++) {
+		var aUrl = tempProfileUrls[i].href;
+		profileUrls.push(aUrl);
+	}
+	// send titles back to background for posting
+	chrome.runtime.sendMessage({'message': 'store_profile_urls', 'profileUrls': profileUrls});
+}
 
-function url_Capture(){
-        
-            // get Urls from page
-            var tempProfileUrls = document.getElementsByClassName('_8o_8r lfloat_ohe');
-            var  profileUrls= [];
-            for (var i = 0; i < tempProfileUrls.length; i++) {
-                var aUrl = tempProfileUrls[i].href;
-                profileUrls.push(aUrl);
-            }
-            // send titles back to background for posting
-            chrome.runtime.sendMessage({'message': 'urlList', 'profileUrls': profileUrls});
- 
-
-        }
-    }
-
-
-   
-   window.onload = ();
-
-   chrome.runtime.onMessage.addListener(
-   	//redirects to next page
-   		function(request , sender, sendReponse) {
-   			if ( request.message === 'go_for_redirect') {
-   				window.location.assign(request.next_url);
-   				var about_Nav = document.getElementsByClassName('_6-6')[0].href
-   				//implement name scrap
-   				// birthday
-   				//navigate to basic info
-   				//scrap Gender
-   				//Navigate to Work and Education
-   				//Scrap highschool and college
-   				// navigate to places lived scrap hometown.
-   				//send map of scrapped info to background and list of Urls
-
-   			}
-   		} 
-   		);
-
+chrome.runtime.onMessage.addListener(
+	//redirects to next page
+	function(request , sender, sendReponse) {
+		if ( request.message === 'get_profile_urls') {
+			captureUrls();
+		}
+		else if (request.message === 'scrape_profile_info') {
+			var profileUrl = request.profileUrl;
+			window.assign(profileUrl);
+			// scrape page for the needed info
+			// put it into a profile object
+			var singleProfile = new Profile();
+			// singleProfile.FirstName = the first name grabbed from the page
+			// put rest of profile info put into singleProfile
+			chrome.runtime.sendMessage({'message': 'store_single_profile_info', 'singleProfile': singleProfile});
+		}
+	}
+);
