@@ -40,15 +40,17 @@ function scrape (parent, child){
 		}
 
 function get_Email (front, end) {
-	if !(document.getElementsByClassName(front)[0]) {
-			var complete_Email = "Not Provided";
+	if (document.getElementsByClassName(front)[0]) {
+
+			var front_Email = document.getElementsByClassName(front)[0].innerText;
+            var end_Email = document.getElementsByClassName(end)[0].innerText;
+            var complete_Email = front_Email.concat(end_Email);
+
+
 
 			}
 	else{
-				var front_Email = document.getElementsByClassName(front)[0].innerText;
-        		var end_Email = document.getElementsByClassName(end)[0].innerText;
-        		var complete_Email = front_Email.concat(end_Email);
-        		return complete_Email;
+			var complete_Email = "Not Provided";
 		}
 		return complete_Email;
 	}
