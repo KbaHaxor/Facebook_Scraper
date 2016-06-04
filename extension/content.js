@@ -98,10 +98,10 @@ function page_scrape (){
     page_Nav[2].click();
     var home_Town = get_hometown('hometown','_50f5 _50f7');
     //get highschool
-    page_Nav[1].click()
+    page_Nav[1].click();
     var highSchool = get_HighSchool('_2lzr _50f5 _50f7');
     var singleProfile = new Profile(profile_Name,complete_Email,gender, home_Town, highSchool, bday);
-	return singleProfile
+	return singleProfile;
 
 
 
@@ -109,7 +109,7 @@ function page_scrape (){
     	}
 
 
-	}
+
 chrome.runtime.onMessage.addListener(
 	//redirects to next page
 	function(request , sender, sendReponse) {
