@@ -1,7 +1,7 @@
 var profileUrlCollection = []; // an array of profile urls
 var profileInfoCollection = []; // an array of profile objects holding profile information
 
-function sendMessageToTab(message) {
+function sendMessageToActiveTab(message) {
 	chrome.tabs.query({active:true},function(tabs){
 		var activeTab = tabs[0];
 		chrome.tabs.sendMessage(activeTab.id, message);
@@ -15,12 +15,18 @@ chrome.runtime.onMessage.addListener(
 			request.profileUrls.forEach(function(element) {
 				profileUrlCollection.push(element); // push all urls to the url collection
 			});
-			sendMessageToTab({'message': 'profile_urls_stored'});
+			sendMessageToActiveTab({'message': 'profile_urls_stored'});
 		}
 		else if (request.message === 'initiate_profile_scrape') {
 			if (profileUrlCollection !== []) {
 				var profileUrl = profileUrlCollection.pop();
-				sendMessageToTab({'message': 'scrape_profile_info', 'profileUrl': profileUrl});
+				chrome.tabs.query({active:true}, function(tabs) {
+					var activeTab = tabs[0];
+					chrome.tabs.update(activeTab.id, {url: profileUrl}, function(tab) {
+						// response sent after redirect - means we can safely scrape
+						sendMessageToActiveTab({'message': 'scrape_profile_info'});
+					});
+				});
 			}
 			else {
 				chrome.runtime.sendMessage('post_users');
