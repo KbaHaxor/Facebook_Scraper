@@ -8,22 +8,20 @@ function Profile (fullName, email, gender, homeTown, highSchool, birthDay) {
 
 	}
 
-function captureUrls(){
-	// get Urls from page
-
+function captureProfileUrls(){
 	//Fully view group members
 	while(document.getElementsByClassName('pam uiBoxLightblue uiMorePagerPrimary')[0].hasAttribute('href')){
 		var seeMore = document.getElementsByClassName('pam uiBoxLightblue uiMorePagerPrimary')[0];
 		seeMore.click();
-		};
+	};
 
 	var profileImageLinksToProfiles = document.querySelectorAll('a._8o._8r.lfloat._ohe:not(.fbxWelcomeBoxSmallLeft)');
 	var  profileUrls= [];
-	for (var i = 0; i < tempProfileUrls.length; i++) {
-		var aUrl = tempProfileUrls[i].href;
+	for (var i = 0; i < profileImageLinksToProfiles.length; i++) {
+		var aUrl = profileImageLinksToProfiles[i].href;
 		profileUrls.push(aUrl);
 	}
-	// send titles back to background for posting
+	// send profile urls back to background for storing
 	chrome.runtime.sendMessage({'message': 'store_profile_urls', 'profileUrls': profileUrls});
 }
 
@@ -31,13 +29,12 @@ function scrape (parent, child){
 	if (document.getElementsByClassName(parent)[0]){
 		var parent_Element = document.getElementsByClassName(parent)[0];
 		var ans = parent_Element.getElementsByClassName(child)[0].innerText;
-
-		}
+	}
 	else {
-			var ans = 'Not Provided';
-			}
-		return ans;
-		}
+		var ans = 'Not Provided';
+	}
+	return ans;
+}
 
 function get_Email (front, end) {
 	if (document.getElementsByClassName(front)[0]) {
@@ -68,21 +65,22 @@ function get_hometown (parent, child){
         }
 
 function get_HighSchool (class_name) {
-			if (document.getElementsByClassName(class_name)[0]) {
-                var schools = document.getElementsByClassName(class_name);
-                var first_School = schools.slice(-1).pop().innerText;
-                }
-            else {
-                var first_School = "Not provided";
-                }
-                return first_School;
-                }
+	if (document.getElementsByClassName(class_name)[0]) {
+        var schools = document.getElementsByClassName(class_name);
+        var first_School = schools.slice(-1).pop().innerText;
+        }
+    else {
+        var first_School = "Not provided";
+        }
+	return first_School;
+}
 
 function page_scrape (){
-	// directs scrpit to about page
+	// directs script to about page
 	var aboutNav = document.getElementsByClassName('_6-6')[1];
     aboutNav.click();
     var profile_Name = document.getElementById('fb-timeline-cover-name').textContent;
+
     //0 = Overview
     //1 = Work and Education
     //2 = Places lived
@@ -116,11 +114,12 @@ chrome.runtime.onMessage.addListener(
 	//redirects to next page
 	function(request , sender, sendReponse) {
 		if ( request.message === 'get_profile_urls') {
-			captureUrls();
+			captureProfileUrls();
+		}
+		else if (request.message === 'profile_urls_stored') {
+			alert('Profile URLs stored successfully');
 		}
 		else if (request.message === 'scrape_profile_info') {
-			var profileUrl = request.profileUrl;
-			window.assign(profileUrl);
 			var singleProfile = page_scrape();
 			chrome.runtime.sendMessage({'message': 'store_single_profile_info', 'singleProfile': singleProfile});
 		}
