@@ -1,7 +1,7 @@
 function sendMessageToActiveTab(message) {
-	chrome.tabs.query({active:true},function(tabs){
-		var activeTab = tabs[0];
-		chrome.tabs.sendMessage(activeTab.id, message);
+	chrome.tabs.getSelected(null, function(tab) {
+				var activeTab = tab.id;
+				 chrome.tabs.sendMessage(activeTab, message);
 	});
 }
 

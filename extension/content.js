@@ -8,22 +8,38 @@ function Profile (fullName, email, gender, homeTown, highSchool, birthDay) {
 
 	}
 
-function captureProfileUrls(){
-	//Fully view group members
-	while(document.getElementsByClassName('pam uiBoxLightblue uiMorePagerPrimary')[0].hasAttribute('href')){
-		var seeMore = document.getElementsByClassName('pam uiBoxLightblue uiMorePagerPrimary')[0];
-		seeMore.click();
-	};
+function timeoutLoop (delay, callback, counter) { 
+	var seeMoreButton = document.querySelectorAll('a.pam.uiBoxLightblue.uiMorePagerPrimary:not(.tickerMoreLink)');
+	
+		if (!seeMoreButton.length == 0){
+			setTimeout(function() {
+					seeMoreButton[0].click();
+					counter = counter + 1;
+					console.log(counter);
 
-	var profileImageLinksToProfiles = document.querySelectorAll('a._8o._8r.lfloat._ohe:not(.fbxWelcomeBoxSmallLeft)');
-	var  profileUrls= [];
-	for (var i = 0; i < profileImageLinksToProfiles.length; i++) {
-		var aUrl = profileImageLinksToProfiles[i].href;
-		profileUrls.push(aUrl);
+					timeoutLoop(delay, callback, counter);
+			}, delay);
+
+		}
+		else{
+			callback();
+		}
+		
 	}
-	// send profile urls back to background for storing
-	chrome.runtime.sendMessage({'message': 'store_profile_urls', 'profileUrls': profileUrls});
-}
+
+// function captureProfileUrls(){
+// 	//Fully view group members
+// 	var profileImageLinksToProfiles = document.querySelectorAll('a._8o._8r.lfloat._ohe:not(.fbxWelcomeBoxSmallLeft)');
+// 	var  profileUrls= [];
+// 	for (var i = 0; i < profileImageLinksToProfiles.length; i++) {
+// 		var aUrl = profileImageLinksToProfiles[i].href;
+// 		profileUrls.push(aUrl);
+// 	}
+// 	// send profile urls back to background for storing
+// 	chrome.runtime.sendMessage({'message': 'store_profile_urls', 'profileUrls': profileUrls});
+// }
+
+
 
 function scrape (parent, child){
 	if (document.getElementsByClassName(parent)[0]){
@@ -114,8 +130,19 @@ chrome.runtime.onMessage.addListener(
 	//redirects to next page
 	function(request , sender, sendReponse) {
 		if ( request.message === 'get_profile_urls') {
-			captureProfileUrls();
+			timeoutLoop(3000, function() {
+				var profileImageLinksToProfiles = document.querySelectorAll('a._8o._8r.lfloat._ohe:not(.fbxWelcomeBoxSmallLeft)');
+				var  profileUrls= [];
+				for (var i = 0; i < profileImageLinksToProfiles.length; i++) {
+					var aUrl = profileImageLinksToProfiles[i].href;
+					profileUrls.push(aUrl);
+				}
+		// send profile urls back to background for storing
+		chrome.runtime.sendMessage({'message': 'store_profile_urls', 'profileUrls': profileUrls});}, 0 );
 		}
+	
+
+		
 		else if (request.message === 'profile_urls_stored') {
 			alert('Profile URLs stored successfully');
 		}

@@ -1,4 +1,4 @@
-var profileUrlCollection = []; // an array of profile urls
+//var profileUrlCollection = urlCollection; // an array of profile urls
 var profileInfoCollection = []; // an array of profile objects holding profile information
 
 function sendMessageToActiveTab(message) {
@@ -7,6 +7,8 @@ function sendMessageToActiveTab(message) {
 		chrome.tabs.sendMessage(activeTab.id, message);
 	});
 }
+	
+
 
 chrome.runtime.onMessage.addListener(
 	//write info 
@@ -17,7 +19,8 @@ chrome.runtime.onMessage.addListener(
 			});
 			sendMessageToActiveTab({'message': 'profile_urls_stored'});
 		}
-		else if (request.message === 'initiate_profile_scrape') {
+		else if (request.message === 'begin_profile_scrape') {
+			var profileUrlCollection = request.urlCollection;
 			if (profileUrlCollection !== []) {
 				var profileUrl = profileUrlCollection.pop();
 				chrome.tabs.query({active:true}, function(tabs) {
