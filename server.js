@@ -8,25 +8,32 @@ app.use(bodyParser.json());
 
 const PORT = 8080;
 
-app.post('/write-profiles', function(request, response) {
+app.post('/write-profiles' , function (request, response) {
 	// This is going to get a post of an array of profile objects
 	// we need to write those out.
 	var profiles = request.body;
 	try {
-		for(var index in profiles){
-			console.log('Writing profile ' + index);
-			fs.appendFile('profiles.txt', JSON.stringify(profileUrl[index]) + '\n', // this will write the Profile object as a single JSON line, which is not quite what we want.
-			function(e) {
-				if(e !== null) { console.log(e); }
+
+		for (var index in profiles) {
+			var xml = '<profile><fullName>' + index.fullName + '</fullName><email>' + index.email + '</email><gender>' +
+				index.gender + '</gender><birthday>' + index.birthDay + '</birthDay><homeTown>' + index.homeTown +
+				'</homeTown><highSchool>' + index.highSchool + '</highSchool></profile>';
+			console.log(xml);
+			fs.appendFile('face_Book_Profiles.xml', xml, function(e) {
+				if (e !== null) {
+					console.log(e);
+				}
 			});
 		}
+
+
 		response.status(200).send('profiles written successfully');
-	} catch(e) {
+	} catch (e) {
 		console.log(e);
 		response.status(500).send('profiles not written');
-	};
+	}
+
 });
 
 app.listen(PORT, function() {
-	console.log('Listening on localhost:%s', PORT);
-});
+	console.log('Listening on localhost:%s', PORT);});

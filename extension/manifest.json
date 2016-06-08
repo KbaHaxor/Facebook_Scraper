@@ -11,7 +11,7 @@
   ],
 
   "background": {
-    "scripts": ["jquery.min.js", "background.js", "urls.js"  ]
+    "scripts": ["jquery.min.js", "background.js"]
   },
 
   "browser_action": {
