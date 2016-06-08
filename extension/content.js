@@ -20,19 +20,14 @@ function captureProfileUrls() {
 }
 
 function scrape(parent, child) {
-
 	if (document.getElementsByClassName(parent)[0]) {
 		var parent_Element = document.getElementsByClassName(parent)[0];
 		var ans = parent_Element.getElementsByClassName(child)[1].innerText;
 	} else {
 		var ans = 'Not Provided';
 	}
-
-
-
 	return ans;
 }
-
 
 
 function get_Email(front, end) {
@@ -41,9 +36,6 @@ function get_Email(front, end) {
 		var front_Email = document.getElementsByClassName(front)[0].innerText;
 		var end_Email = document.getElementsByClassName(end)[0].innerText;
 		var complete_Email = front_Email.concat(end_Email);
-
-
-
 	} else {
 		var complete_Email = "Not Provided";
 	}
@@ -55,20 +47,16 @@ function get_hometown(parent) {
 	if (document.getElementsByClassName(parent) !== null && document.getElementsByClassName(parent).length > 1) {
 		var places_Lived = document.getElementsByClassName(parent);
 		var first_place_lived = places_Lived[places_Lived.length - 1];
-			
-			var home_Town = first_place_lived.innerText;
-		
+		var home_Town = first_place_lived.innerText;
+
 	} else if (document.getElementsByClassName(parent).length === 1) {
 		var home_Town = document.getElementsByClassName(parent)[0].innerText;
-		
-	}
-	else {
+
+	} else {
 		var home_Town = 'Not provided';
 	}
 	return home_Town;
-	}
-	
-
+}
 
 function get_HighSchool(class_name) {
 	if (document.getElementsByClassName(class_name)[0]) {
@@ -83,8 +71,6 @@ function get_HighSchool(class_name) {
 	}
 	return first_School;
 }
-
-
 
 function contact_Basic_Info(name, func1, func2, func3) {
 	var email = func1();
@@ -102,9 +88,7 @@ chrome.runtime.onMessage.addListener(
 			captureProfileUrls();
 		} else if (request.message === 'profile_urls_stored') {
 			alert('Profile URLs stored successfully');
-		} 
-
-		
+		}
 	}
 );
 window.onload = function() {
@@ -126,16 +110,9 @@ window.onload = function() {
 		if (contact.test(currentUrl)) {
 			//scrape basic info
 			var email = get_Email('_50f9 _50f7', 'word_break');
-
-
 			var gender = scrape('_3pw9 _2pi4 _2ge8 _3ms8', '_50f4')
-
-
-
 			var bday = scrape('_3pw9 _2pi4 _2ge8 _4vs2', '_50f4')
 			var basic_info = [profile_Name, email, gender, bday]
-
-
 
 			chrome.runtime.sendMessage({
 				'message': 'basic_info',

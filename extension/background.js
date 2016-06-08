@@ -1,4 +1,3 @@
-
 var profileUrlCollection = [
 	'https://www.facebook.com/dube.christian?fref=grp_mmbr_list',
 	'https://www.facebook.com/eblacker?fref=grp_mmbr_list',
@@ -15,9 +14,6 @@ function Profile(fullName, email, gender, birthDay, homeTown, highSchool) {
 	this.birthDay = birthDay;
 	this.homeTown = homeTown;
 	this.highSchool = highSchool;
-
-
-
 }
 
 function sendMessageToActiveTab(message) {
