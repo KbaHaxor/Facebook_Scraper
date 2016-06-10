@@ -80,18 +80,7 @@ function contact_Basic_Info(name, func1, func2, func3) {
 	return holder;
 }
 
-
-chrome.runtime.onMessage.addListener(
-	//redirects to next page
-	function(request, sender, sendReponse) {
-		if (request.message === 'get_profile_urls') {
-			captureProfileUrls();
-		} else if (request.message === 'profile_urls_stored') {
-			alert('Profile URLs stored successfully');
-		}
-	}
-);
-window.onload = function() {
+function do_Work() {
 	var currentUrl = window.location.href;
 	var page_Nav = document.getElementsByClassName('_5pwr');
 	var living = new RegExp(/living/g);
@@ -99,14 +88,12 @@ window.onload = function() {
 	var education = new RegExp(/education/g);
 	var about = new RegExp(/about/g);
 	var profile_type = new RegExp(/profile.php/g);
+	var overview = new RegExp(/overview/g);
 	var profile_location = currentUrl.substr(currentUrl.length - 5);
-
+	var profile_Name = document.getElementById('fb-timeline-cover-name').textContent;
 	if (profile_location == '_list') {
-		//about nav
 		document.getElementsByClassName('_6-6')[1].click();
 	} else {
-		var profile_Name = document.getElementById('fb-timeline-cover-name').textContent;
-
 		if (contact.test(currentUrl)) {
 			//scrape basic info
 			var email = get_Email('_50f9 _50f7', 'word_break');
@@ -135,9 +122,31 @@ window.onload = function() {
 				'message': 'home_info',
 				'home_info': home_info
 			});
-		} else {
-			//navigates to about if not already on
+		} else if (profile_location === 'about' && !living.test(currentUrl) && !education.test(currentUrl) && !contact.test(currentUrl)) {
+			//navigates to basic info
+
 			page_Nav[3].click();
 		}
 	}
+
+}
+
+
+chrome.runtime.onMessage.addListener(
+	//redirects to next page
+	function(request, sender, sendReponse) {
+		if (request.message === 'get_profile_urls') {
+			captureProfileUrls();
+		} else if (request.message === 'profile_urls_stored') {
+			alert('Profile URLs stored successfully');
+		} else if (request.message === "gopher_it" || (request.message === "scrape_profile_info")) {
+			do_Work();
+		}
+	});
+
+window.onload = function() {
+	chrome.runtime.sendMessage({
+		'message': 'page_load'
+	});
+	window.setTimeout('document.getElementsByClassName("_6-6")[1].click()', 30000);
 }

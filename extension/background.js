@@ -1,9 +1,4 @@
-var profileUrlCollection = [
-	'https://www.facebook.com/dube.christian?fref=grp_mmbr_list',
-	'https://www.facebook.com/eblacker?fref=grp_mmbr_list',
-	'https://www.facebook.com/will.deutch?fref=grp_mmbr_list',
-	'https://www.facebook.com/emily.tifft.5?fref=grp_mmbr_list', 'https://www.facebook.com/profile.php?id=100010763370945&fref=grp_mmbr_list'
-];
+var profileUrlCollection = [];
 var profileInfoCollection = []; // an array of profile objects holding profile information
 var incomplete_Profile = [];
 
@@ -25,6 +20,36 @@ function sendMessageToActiveTab(message) {
 	});
 }
 
+function start_Next_Scrape() {
+	if (profileUrlCollection.length !== 0) {
+		var profileUrl = profileUrlCollection.pop();
+		chrome.tabs.query({
+			active: true
+		}, function(tabs) {
+			var activeTab = tabs[0];
+			chrome.tabs.update(activeTab.id, {
+				url: profileUrl
+			}, function(tab) {
+				// response sent after redirect - means we can safely scrape
+				sendMessageToActiveTab({
+					'message': 'scrape_profile_info'
+				});
+			});
+		});
+	}
+
+}
+
+function write_Profile(profile) {
+	$.ajax({
+		type: 'POST',
+		data: JSON.stringify(profile),
+		contentType: "application/json",
+		dataType: 'json',
+		url: 'http://localhost:8080/write-profiles'
+
+	});
+}
 chrome.runtime.onMessage.addListener(
 	//write info 
 	function(request, sender, sendResponse) {
@@ -36,45 +61,45 @@ chrome.runtime.onMessage.addListener(
 				'message': 'profile_urls_stored'
 			});
 		} else if (request.message === 'initiate_profile_scrape') {
-			if (profileUrlCollection.length !== 0) {
-				var profileUrl = profileUrlCollection.pop();
-				chrome.tabs.query({
-					active: true
-				}, function(tabs) {
-					var activeTab = tabs[0];
-					chrome.tabs.update(activeTab.id, {
-						url: profileUrl
-					}, function(tab) {
-						// response sent after redirect - means we can safely scrape
-						sendMessageToActiveTab({
-							'message': 'scrape_profile_info'
-						});
-					});
-				});
-			}
+
+			window.setTimeout('start_Next_Scrape()', 10000);
+
+		} else if (request.message === 'page_load') {
+			sendMessageToActiveTab({
+				'message': 'gopher_it'
+			});
 		} else if (request.message === 'basic_info') {
-			var singleProfile = new Profile(request.basic_info[0], request.basic_info[1], request.basic_info[2], request.basic_info[3], "undefined", "undefined");
+			var singleProfile = new Profile(request.basic_info[0], request.basic_info[1], request.basic_info[2], request.basic_info[3], 'Not Available', 'Not Available');
 			incomplete_Profile.push(singleProfile);
+
 		} else if (request.message === 'edu_info') {
 			incomplete_Profile[0].highSchool = request.edu_info;
 
+
 		} else if (request.message === 'home_info') {
 			if (profileUrlCollection.length !== 0) {
-				incomplete_Profile[0].homeTown = request.home_info;
-				var singleProfile = incomplete_Profile.pop();
-				profileInfoCollection.push(singleProfile);
-				chrome.runtime.sendMessage({
-					'message': 'initiate_profile_scrape'
-				});
-			} else {
-				$.ajax({
-					type: 'POST',
-					data: profileInfoCollection,
-					contentType: "application/json",
-					dataType: 'json',
-					url: 'http://localhost:8080/write-profiles'
+				if (request.home_info === "undefined") {
+					incomplete_Profile[0].homeTown = "Not Provided";
+					var singleProfile = incomplete_Profile.pop();
+					write_Profile(singleProfile);
+					profileInfoCollection.push(singleProfile);
+					window.setTimeout('start_Next_Scrape()', 10000);
+				} else {
+					incomplete_Profile[0].homeTown = request.home_info;
+					var singleProfile = incomplete_Profile.pop();
+					write_Profile(singleProfile);
+					profileInfoCollection.push(singleProfile);
+					window.setTimeout('start_Next_Scrape()', 10000);
+				}
 
-				});
+			} else {
+				if (incomplete_Profile.length !== 0) {
+					incomplete_Profile[0].homeTown = request.home_info;
+					var last_profile = incomplete_Profile[0];
+					write_Profile(last_profile);
+				}
+				window.setTimeout('start_Next_Scrape()', 10000);
+
 			}
 
 		}

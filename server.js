@@ -11,20 +11,21 @@ const PORT = 8080;
 app.post('/write-profiles' , function (request, response) {
 	// This is going to get a post of an array of profile objects
 	// we need to write those out.
-	var profiles = request.body;
+	var profile = request.body;
 	try {
 
-		for (var index in profiles) {
-			var xml = '<profile><fullName>' + index.fullName + '</fullName><email>' + index.email + '</email><gender>' +
-				index.gender + '</gender><birthday>' + index.birthDay + '</birthDay><homeTown>' + index.homeTown +
-				'</homeTown><highSchool>' + index.highSchool + '</highSchool></profile>';
+		
+			 
+			var xml = '<profile><fullName>' + profile.fullName + '</fullName><email>' + profile.email + '</email><gender>' +
+				profile.gender + '</gender><birthDay>' + profile.birthDay + '</birthDay><homeTown>' + profile.homeTown +
+				'</homeTown><highSchool>' + profile.highSchool + '</highSchool></profile>';
 			console.log(xml);
 			fs.appendFile('face_Book_Profiles.xml', xml, function(e) {
 				if (e !== null) {
 					console.log(e);
 				}
 			});
-		}
+		
 
 
 		response.status(200).send('profiles written successfully');
