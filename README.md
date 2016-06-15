@@ -4,21 +4,20 @@
 <br><br>
 ####Introduction
 The purpose of this project is to grab information
-concerning name, age, gender, hometown, and college
-major from group members in a facebook group. The information will
+concerning name, age, gender, hometown, and highschool
+from profile that are members in a facebook group. The information will
 be used to crossreference University of Minnesota databases.
-As it stands today, **June 3, 2016**,
-Facebook_Scraper isn't functional. We are adapting a previous project
-GSScrapNode https://github.com/rdhite/GSScrapeNode
-to complete the task.
+As it stands today, **June 15, 2016**,
+Facebook_Scraper is functional, but the software liscence for the finished product
+was purchased. The client asked me not to upload the finished code on Github.
 <br><br>
-GSScrapeNode is a version of GSScrape implemented through a Node.js
+Facebook_Scraper is implemented through a Node.js
 based webserver and a Google Chrome extension. It is built this way
-because extracting titles from a Google Scholar web page is trivial,
-but outputting the titles to a file is not. The file output aspect is
-what generated a need for a webserver. In a nutshell, GSScrapeNode will
-fetch the titles from a Google Scholar results page and post them to
-a local webserver. The webserver will then write the titles to a file.
+because extracting information from a Facebook web page is trivial,
+but outputting the information to a file is not. The file output aspect is
+what generated a need for a webserver. In a nutshell, Facebook_Scraper will
+fetch the profile URLs from a Facebook group member page, iterate through the collected URLs, and post them to
+a local webserver. The webserver then writes the profile information to a file in XML format.
 <br><br>
 ####Installation
 <ol>
@@ -35,10 +34,11 @@ a local webserver. The webserver will then write the titles to a file.
 	<li>Next, run <code>nodejs server.js</code><br>You should see a
 	message indicating the server is listening on localhost:8080. You
 	may change the listening port as needed.</li>
-	<li>Navigate to a Google Scholar page with results and click the
-	GSScrapeNode extension button. In scraper_path, there will be a new
-	file called <code>titles.txt</code> that will hold the titles from
+	<li>Navigate to a Facebook group page and click the
+	facebook_Scraper extension button. In the drop down menu click "Get Profile Urls".
+	Once the Urls have been collected click the extension again and click "Scrape all Profiles".
+	In scraper_path, there will be a new
+	file called <code>face_Book_Profiles.xml</code> that will hold  from
 	that page. You may do this on as many pages as needed, and all
-	titles will be appended to <code>titles.txt</code>, one title per
-	line.</li>
+	profile information will be appended to <code>face_Book_Profiles.xml</code>.</li>
 </ol>
